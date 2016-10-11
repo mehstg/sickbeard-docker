@@ -11,6 +11,6 @@ pip install Cheetah
 
 EXPOSE 5050
 
-VOLUME ["/opt/config","/opt/downloads"]
+VOLUME ["/opt/config","/opt/downloads","/opt/scripts"]
 
 ENTRYPOINT python /opt/sickbeard/SickBeard.py
