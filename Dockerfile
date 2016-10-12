@@ -16,9 +16,8 @@ apk del .build-deps && \
 rm -rf /var/cache/apk/* && \
 rm /root/pip.py
 
-
 EXPOSE 8081
 
-VOLUME ["/opt/config","/opt/downloads"]
+VOLUME ["/opt/config","/opt/downloads","/opt/tv"]
 
 ENTRYPOINT python /opt/sickbeard/SickBeard.py  --datadir=${SB_DATA-/opt/config}
