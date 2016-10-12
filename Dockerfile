@@ -1,17 +1,24 @@
-FROM centos:latest
+FROM alpine:latest
 MAINTAINER Paul Braham
-RUN yum update -y && \
-yum install git python-pip gcc gcc-c++ python-devel libffi-devel openssl-devel par2cmdline wget -y && \
-mkdir /opt/sickbeard && \
-ln -s /opt/config /root/.sickbeard && \
+# Installing temporary build packages 
+RUN apk add --no-cache --virtual .build-deps curl gcc g++ python-dev openssl-dev  && \
+# Install packages
+apk add --no-cache python git && \
+# Installing python dependencies 
+curl https://bootstrap.pypa.io/get-pip.py > /root/pip.py && \
+python /root/pip.py && \
+pip install cheetah && \
+# Install sickbeard
 git clone https://github.com/midgetspy/Sick-Beard.git /opt/sickbeard --depth 1 && \
-yum install epel-release -y && \
-yum install python-pip gcc gcc-c++ python-devel openssl-devel -y && \
-pip install --upgrade pip && \
-pip install Cheetah
+# Removing all software installed in order to compile par2 
+apk del .build-deps && \
+# Removing all download and package cache 
+rm -rf /var/cache/apk/* && \
+rm /root/pip.py
 
-EXPOSE 8001
+
+EXPOSE 8081
 
 VOLUME ["/opt/config","/opt/downloads"]
 
-ENTRYPOINT python /opt/sickbeard/SickBeard.py
+ENTRYPOINT python /opt/sickbeard/SickBeard.py  --datadir=${SB_DATA-/opt/config}
